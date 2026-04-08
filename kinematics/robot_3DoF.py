@@ -86,5 +86,3 @@ class Robot:
             angles += delta_theta * step_size
 
         raise ValueError(f'Failed to converge to the target position ({target_pos[0]}, {target_pos[1]}, {target_pos[2]}) within {max_iter} iterations. Final error: {np.linalg.norm(error):.4f}')
-
-        return angles
