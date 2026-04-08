@@ -31,7 +31,7 @@ try:
     print(f'Calulated angles using the iterative method: [{calculated_angles_deg[0]:.2f}°, {calculated_angles_deg[1]:.2f}°, {calculated_angles_deg[2]:.2f}°]')
     
 
-    T_end = my_robot.forward_kinematics(calculated_angles_rad)
+    T_end = my_robot.FK(calculated_angles_rad)
     calculated_pos = [T_end[0, 3], T_end[1, 3], T_end[2, 3]]
 
     print("\n--- CHECK WITH FORWARD KINEMATICS ---")

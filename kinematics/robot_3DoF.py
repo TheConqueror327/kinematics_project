@@ -7,7 +7,7 @@ class Robot:
         self.dh_params = dh_params
 
 
-    def forward_kinematics(self, joint_angles: np.ndarray) -> np.ndarray:
+    def FK(self, joint_angles: np.ndarray) -> np.ndarray:
         T_total = np.identity(4)
         for idx, i in enumerate(self.dh_params):
             T_current = dh_matrix(joint_angles[idx], i[1], i[2], i[3])
@@ -51,13 +51,13 @@ class Robot:
 
         J = np.zeros((3, len(joint_angles)))
 
-        current_pos = self.forward_kinematics(joint_angles)[:3, 3]
+        current_pos = self.FK(joint_angles)[:3, 3]
 
         for i in range(len(joint_angles)):
             joint_angles_copy = list(joint_angles)
             joint_angles_copy[i] += delta
             
-            new_pos = self.forward_kinematics(np.array(joint_angles_copy))[:3, 3]
+            new_pos = self.FK(np.array(joint_angles_copy))[:3, 3]
 
             J[:, i] = (new_pos - current_pos) / delta
             
@@ -71,7 +71,7 @@ class Robot:
         target_pos_array = np.array(target_pos)
 
         for i in range(max_iter):
-            current_pos = self.forward_kinematics(angles)[:3, 3]
+            current_pos = self.FK(angles)[:3, 3]
             error = target_pos_array - current_pos
 
             if np.linalg.norm(error) < tolerance:
