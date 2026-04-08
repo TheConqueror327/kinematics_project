@@ -6,12 +6,14 @@ class Robot:
     def __init__(self, dh_params: np.ndarray) -> None:
         self.dh_params = dh_params
 
+
     def forward_kinematics(self, joint_angles: np.ndarray) -> np.ndarray:
         T_total = np.identity(4)
         for idx, i in enumerate(self.dh_params):
             T_current = dh_matrix(joint_angles[idx], i[1], i[2], i[3])
             T_total = T_total @ T_current
         return T_total
+    
     
     def IK_analytic(self, target_pos: np.ndarray) -> np.ndarray:
         x, y, z = target_pos
@@ -51,7 +53,7 @@ class Robot:
 
         current_pos = self.forward_kinematics(joint_angles)[:3, 3]
 
-        for i in range(3):
+        for i in range(len(joint_angles)):
             joint_angles_copy = list(joint_angles)
             joint_angles_copy[i] += delta
             
