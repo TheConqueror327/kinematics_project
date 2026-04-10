@@ -4,7 +4,7 @@ from kinematics.utils import rot_matrix_to_euler
 
 # 3 DoF
 
-dh_parameters = np.array([
+dh_3DoF = np.array([
     [0, 10.0, 0.0, np.deg2rad(90)],  # Link 1
     [0, 0.0, 10.0, 0.0],             # Link 2
     [0, 0.0, 10.0, 0.0]              # Link 3
@@ -26,7 +26,7 @@ dh_6DoF = np.array([
 
 # 3 DoF FK and IK test
 
-my_robot = Robot(dh_parameters)
+my_robot = Robot(dh_3DoF)
 
 target_pos = np.array([20.0, 0.0, 10.0])
 
