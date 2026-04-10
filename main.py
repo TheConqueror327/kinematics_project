@@ -1,5 +1,6 @@
 import numpy as np
-from kinematics.robot_3DoF import Robot
+from kinematics.robot_6DoF import Robot
+from kinematics.utils import rot_matrix_to_euler
 
 # 3 DoF
 
@@ -9,6 +10,21 @@ dh_parameters = np.array([
     [0, 0.0, 10.0, 0.0]              # Link 3
 ])
 
+# 6 DoF - simplified UR5 Robotic arm
+
+dh_6DoF = np.array([
+    [0.0, 8.9,  0.0,  np.pi/2],  # Base
+    [0.0, 0.0, -42.5, 0.0],      # Shoulder
+    [0.0, 0.0, -39.2, 0.0],      # Elbow
+    [0.0, 10.9, 0.0,  np.pi/2],  # Wrist 1
+    [0.0, 9.4,  0.0, -np.pi/2],  # Wrist 2
+    [0.0, 8.2,  0.0,  0.0]       # Wrist 3
+#   theta, d,   a,    alpha
+])
+
+"""
+
+# 3 DoF FK and IK test
 
 my_robot = Robot(dh_parameters)
 
@@ -39,3 +55,49 @@ try:
 
 except ValueError as e:
     print(f"An error occured: {e}")
+
+"""
+
+
+"""
+T_initial = my_robot.FK(np.array([0, 0, 0, 0, 0, 0]))
+
+current_pos = T_initial[:3, 3]
+
+current_rot_matrix = T_initial[:3, :3]
+
+current_orientation = rot_matrix_to_euler(current_rot_matrix)
+
+print(f'Initial position: [{current_pos[0]}, {current_pos[1]}, {current_pos[2]}], current_orientation: [{np.rad2deg(current_orientation[0])}°, {np.rad2deg(current_orientation[1])}°, {np.rad2deg(current_orientation[2])}°]')
+"""
+my_robot = Robot(dh_6DoF)
+
+angles = np.array([0.1, 0.2, 0.3, 0.1, 0.2, 0.3])
+
+T = my_robot.FK(angles)
+
+current_pos = T[:3, 3]
+
+current_orientation = my_robot.rot_mat_to_euler(T[:3, :3])
+
+current_pose = np.concatenate((current_pos, current_orientation))
+
+print(f'Current pose: {current_pose}')
+
+# checking the IK solver:
+
+angles_IK = my_robot.IK(current_pose)
+
+print(f'Angles calculated by IK: {angles_IK}')
+
+# checking back again with FK:
+
+ver_T = my_robot.FK(angles_IK)
+
+ver_pos = ver_T[:3, 3]
+
+ver_orientation = my_robot.rot_mat_to_euler(ver_T[:3, :3])
+
+ver_pose = np.concatenate((ver_pos, ver_orientation))
+
+print(f'Final check wit FK: {ver_pose} == {current_pose}')

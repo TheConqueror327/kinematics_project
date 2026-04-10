@@ -11,3 +11,14 @@ def dh_matrix(theta: float, d: float, a: float, alpha: float) -> np.ndarray:
 
     return T
 
+def rot_matrix_to_euler(R: np.ndarray) -> np.ndarray:
+    sy = math.sqrt(R[0, 0] ** 2 + R[1, 0] ** 2)
+
+    roll = math.atan2(R[2, 1], R[2, 2])
+    pitch = math.atan2(-R[2, 0], sy)
+    yaw = math.atan2(R[1, 0], R[0, 0])
+
+    return np.array([roll, pitch, yaw])
+
+def normalize_angle(angle: float) -> float:
+    return (angle + np.pi) % (2 * np.pi) - np.pi
