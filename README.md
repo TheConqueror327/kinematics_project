@@ -24,6 +24,8 @@ This project focuses on kinematic analysis and simulation of robotic systems for
 kinematics_project/
 ├── kinematics/
 │   ├── robot_3DoF.py
+│   ├── robot_6DoF.py
+│   ├── utils.py
 ├── LeRobot_SO101/
 │   ├── LeRobot_SO101.urdf
 ├── main.py
