@@ -25,6 +25,7 @@ kinematics_project/
 ├── kinematics/
 │   ├── robot_3DoF.py
 │   ├── robot_6DoF.py
+│   ├── robot_nDoF.py
 │   ├── utils.py
 ├── LeRobot_SO101/
 │   ├── LeRobot_SO101.urdf

@@ -1,5 +1,5 @@
 import numpy as np
-from kinematics.robot_6DoF import Robot
+from kinematics.robot_nDoF import Robot
 from kinematics.utils import rot_matrix_to_euler
 
 # 3 DoF
@@ -60,6 +60,8 @@ except ValueError as e:
 
 
 """
+# 6 DoF FK and IK test
+
 T_initial = my_robot.FK(np.array([0, 0, 0, 0, 0, 0]))
 
 current_pos = T_initial[:3, 3]
@@ -69,7 +71,7 @@ current_rot_matrix = T_initial[:3, :3]
 current_orientation = rot_matrix_to_euler(current_rot_matrix)
 
 print(f'Initial position: [{current_pos[0]}, {current_pos[1]}, {current_pos[2]}], current_orientation: [{np.rad2deg(current_orientation[0])}°, {np.rad2deg(current_orientation[1])}°, {np.rad2deg(current_orientation[2])}°]')
-"""
+
 my_robot = Robot(dh_6DoF)
 
 angles = np.array([0.1, 0.2, 0.3, 0.1, 0.2, 0.3])
@@ -101,3 +103,64 @@ ver_orientation = my_robot.rot_mat_to_euler(ver_T[:3, :3])
 ver_pose = np.concatenate((ver_pos, ver_orientation))
 
 print(f'Final check wit FK: {ver_pose} == {current_pose}')
+"""
+
+
+
+# n DoF FK and IK test
+
+# 3D - 3 DoF: only position
+
+my_robot = Robot(dh_6DoF)
+
+
+angles = np.array([0.1, 0.2, 0.3, 0.1, 0.2, 0.3])
+
+T_3 = my_robot.FK(angles)
+
+current_pos = T_3[:3, 3] # (X, Y, Z)
+
+
+angles_IK = my_robot.IK(current_pos)
+
+T_3_ver = my_robot.FK(angles_IK)
+
+ver_pos = T_3_ver[:3, 3]
+
+
+print(f'Original angles: {angles}, FK: {current_pos}')
+
+print(f'Angles calculated with IK: {angles_IK}, FK: {ver_pos}')
+
+
+
+# 3D - 6 DoF: position and orientation
+
+my_robot = Robot(dh_6DoF)
+
+
+angles = np.array([0.1, 0.2, 0.3, 0.1, 0.2, 0.3])
+
+T_6 = my_robot.FK(angles)
+
+current_pos = T_6[:3, 3] # (X, Y, Z, Roll, Pitch, Yaw)
+
+current_orientation = my_robot.rot_mat_to_euler(T_6[:3, :3])
+
+current_pose = np.concatenate((current_pos, current_orientation))
+
+
+angles_IK = my_robot.IK(current_pose)
+
+T_6_ver = my_robot.FK(angles_IK)
+
+ver_pos = T_6_ver[:3, 3]
+
+ver_orientation = my_robot.rot_mat_to_euler(T_6_ver[:3, :3])
+
+ver_pose = np.concatenate((ver_pos, ver_orientation))
+
+
+print(f'Original angles: {angles}, FK: {current_pose}')
+
+print(f'Angles calculated with IK: {angles_IK}, FK: {ver_pose}')
