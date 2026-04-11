@@ -1,2 +1,4 @@
-pycache/
+kinematics/__pycache__/
+test/__pycache__/
+.vscode/
 venv/
