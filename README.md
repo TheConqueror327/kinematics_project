@@ -9,6 +9,7 @@ This project focuses on kinematic analysis and simulation of robotic systems for
 - Forward and inverse kinematics calculations
 - Visualization of robot trajectories
 - Support for multiple robot configurations
+- Support for creating a `Robot` from a `.urdf` file
 
 ## Getting Started
 

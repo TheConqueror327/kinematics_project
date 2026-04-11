@@ -2,9 +2,20 @@ import numpy as np
 import math
 from .utils import *
 
+
+
 class Robot:
     def __init__(self, dh_params: np.ndarray) -> None:
         self.dh_params = dh_params
+
+    
+    @classmethod
+    def from_urdf(cls, file_path: str) -> None:
+        dh_list_temp = []
+        from_urdf = [] # export format of urdf2dh: [{"name": "joint1", "a": 0.12, "alpha": 1.507, "d": 0.340, "theta_offset":  1.517}, ...]
+        for idx, element in enumerate(from_urdf):
+            dh_list_temp[idx] = element
+
 
     
     def rot_mat_to_euler(self, R: np.ndarray) -> np.ndarray:
