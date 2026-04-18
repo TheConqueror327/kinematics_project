@@ -58,11 +58,6 @@ class Robot:
         return cls(chain)
             
 
-            
-
-
-"""
-    
     def rot_mat_to_euler(self, R: np.ndarray) -> np.ndarray:
         return rot_matrix_to_euler(R)
     
@@ -77,12 +72,26 @@ class Robot:
 
     def FK(self, joint_angles: np.ndarray) -> np.ndarray:
         T_total = np.identity(4)
-        for idx, i in enumerate(self.dh_params):
-            T_current = dh_matrix(joint_angles[idx], i[1], i[2], i[3])
+        for idx, joint_data in enumerate(self.kinematic_chain):
+            xyz = joint_data['xyz']
+            rpy = joint_data['rpy']
+            axis = joint_data['axis']
+            theta = joint_angles[idx]
+
+            T_translation = translation_matrix(xyz[0], xyz[1], xyz[2])
+
+            T_RPY = rpy_to_matrix(rpy[0], rpy[1], rpy[2])
+
+            T_motor = joint_rotation_matrix(axis, theta)
+
+
+            T_current =  T_translation @ T_RPY @ T_motor
+
             T_total = T_total @ T_current
+            
         return T_total
     
-
+"""
     def compute_jacobian(self, joint_angles: np.ndarray, req_dim: int) -> np.ndarray: # required dimension: (X, Y, Z) -> 3 x N matrix, (X, Y, Z, Roll, Pitch, Yaw) -> 6 x N matrix, where N is the number of joints.
         delta = 1e-5
 
