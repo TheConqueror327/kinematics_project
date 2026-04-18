@@ -1,22 +1,67 @@
 import numpy as np
 import math
 from .utils import *
+import xml.etree.ElementTree as ET
+from typing import Self
 
 
 
 class Robot:
-    def __init__(self, dh_params: np.ndarray) -> None:
-        self.dh_params = dh_params
+    def __init__(self, kinematic_chain: list) -> None:
+        self.kinematic_chain = kinematic_chain
 
-    
+    # Static method for parsing a string to a list:  "0 1.2 -3.5" -> [0, 1.2, -3.5]
+
+    @staticmethod 
+    def _parse_string_to_floats(txt: str) -> list:
+        return [float(value) for value in txt.split()]
+
+    # Factory method for importing a robot from an URDF file
+
     @classmethod
-    def from_urdf(cls, file_path: str) -> None:
-        dh_list_temp = []
-        from_urdf = [] # export format of urdf2dh: [{"name": "joint1", "a": 0.12, "alpha": 1.507, "d": 0.340, "theta_offset":  1.517}, ...]
-        for idx, element in enumerate(from_urdf):
-            dh_list_temp[idx] = element
+    def from_urdf(cls, file_path: str) -> Self:
+        tree = ET.parse(file_path)
+        root = tree.getroot()
+
+        chain = []
+
+        for joint in root.findall('joint'):
+            if joint.get('type') not in ['revolute', 'continuous']: # We only use these types of joints
+                continue
+
+            origin_tag = joint.find('origin')
+            axis_tag = joint.find('axis')
+
+            if origin_tag is not None:
+                xyz = Robot._parse_string_to_floats(origin_tag.get('xyz', '0 0 0'))
+                rpy = Robot._parse_string_to_floats(origin_tag.get('rpy', '0 0 0'))
+
+            else:
+                xyz = [0.0, 0.0, 0.0]
+                rpy = [0.0, 0.0, 0.0]
 
 
+            if axis_tag is not None:
+                axis = Robot._parse_string_to_floats(axis_tag.get('xyz', '1 0 0')) # Standard default: X axis
+
+            else:
+                axis = [1.0, 0.0, 0.0]
+
+            joint_data = {
+                'xyz': xyz,
+                'rpy': rpy,
+                'axis': axis
+            }
+
+            chain.append(joint_data)
+        
+        return cls(chain)
+            
+
+            
+
+
+"""
     
     def rot_mat_to_euler(self, R: np.ndarray) -> np.ndarray:
         return rot_matrix_to_euler(R)
@@ -118,3 +163,4 @@ class Robot:
             joint_angles += delta_theta * step_size
 
         raise ValueError(f'Failed to converge to the target position [{target_pose[0]}, {target_pose[1]}, {target_pose[2]}] and to the target orientation [{np.rad2deg(target_pose[3])}°, {np.rad2deg(target_pose[4])}°, {np.rad2deg(target_pose[5])}°] within {max_iter} iterations. Final error: {np.linalg.norm(error):.4f}')
+    """
