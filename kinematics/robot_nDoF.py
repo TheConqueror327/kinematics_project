@@ -91,7 +91,7 @@ class Robot:
             
         return T_total
     
-"""
+
     def compute_jacobian(self, joint_angles: np.ndarray, req_dim: int) -> np.ndarray: # required dimension: (X, Y, Z) -> 3 x N matrix, (X, Y, Z, Roll, Pitch, Yaw) -> 6 x N matrix, where N is the number of joints.
         delta = 1e-5
 
@@ -140,7 +140,7 @@ class Robot:
         if req_dim not in [3, 6]:
             raise ValueError(f'Invalid target dimension: {target_pose}')
         
-        joint_angles = np.zeros(len(self.dh_params)) # general (here 6) case for the number of joints
+        joint_angles = np.zeros(len(self.kinematic_chain)) # general (here 6) case for the number of joints
 
         for i in range(max_iter):
             current_T = self.FK(joint_angles)
@@ -172,4 +172,3 @@ class Robot:
             joint_angles += delta_theta * step_size
 
         raise ValueError(f'Failed to converge to the target position [{target_pose[0]}, {target_pose[1]}, {target_pose[2]}] and to the target orientation [{np.rad2deg(target_pose[3])}°, {np.rad2deg(target_pose[4])}°, {np.rad2deg(target_pose[5])}°] within {max_iter} iterations. Final error: {np.linalg.norm(error):.4f}')
-    """
