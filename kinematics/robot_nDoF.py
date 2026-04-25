@@ -26,7 +26,8 @@ class Robot:
         chain = []
 
         for joint in root.findall('joint'):
-            if joint.get('type') not in ['revolute', 'continuous', 'fixed']: # We only use these types of joints
+            j_type = joint.get('type')
+            if j_type not in ['revolute', 'continuous', 'fixed']: # We only use these types of joints
                 continue
 
             origin_tag = joint.find('origin')
@@ -48,6 +49,7 @@ class Robot:
                 axis = [1.0, 0.0, 0.0]
 
             joint_data = {
+                'type': j_type,
                 'xyz': xyz,
                 'rpy': rpy,
                 'axis': axis
