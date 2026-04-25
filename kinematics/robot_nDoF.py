@@ -26,7 +26,7 @@ class Robot:
         chain = []
 
         for joint in root.findall('joint'):
-            if joint.get('type') not in ['revolute', 'continuous']: # We only use these types of joints
+            if joint.get('type') not in ['revolute', 'continuous', 'fixed']: # We only use these types of joints
                 continue
 
             origin_tag = joint.find('origin')
@@ -72,20 +72,24 @@ class Robot:
 
     def FK(self, joint_angles: np.ndarray) -> np.ndarray:
         T_total = np.identity(4)
-        for idx, joint_data in enumerate(self.kinematic_chain):
+
+        angle_index = 0
+
+        for joint_data in self.kinematic_chain:
             xyz = joint_data['xyz']
             rpy = joint_data['rpy']
-            axis = joint_data['axis']
-            theta = joint_angles[idx]
-
+            
             T_translation = translation_matrix(xyz[0], xyz[1], xyz[2])
+            T_rpy = rpy_to_matrix(rpy[0], rpy[1], rpy[2])
 
-            T_RPY = rpy_to_matrix(rpy[0], rpy[1], rpy[2])
+            T_motor = np.identity(4)
 
-            T_motor = joint_rotation_matrix(axis, theta)
+            if joint_data['type'] in ['revolute', 'continuous']:
+                theta = joint_angles[angle_index]
+                T_motor = joint_rotation_matrix(joint_data['axis'], theta)
+                angle_index += 1
 
-
-            T_current =  T_translation @ T_RPY @ T_motor
+            T_current =  T_translation @ T_rpy @ T_motor
 
             T_total = T_total @ T_current
             
