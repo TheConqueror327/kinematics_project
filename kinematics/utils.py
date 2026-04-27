@@ -3,6 +3,7 @@ import math
 
 # translational matrix transformation
 
+
 def translation_matrix(x: float, y: float, z: float) -> np.ndarray:
     TM = np.identity(4)
     TM[0, 3] = x
@@ -11,7 +12,9 @@ def translation_matrix(x: float, y: float, z: float) -> np.ndarray:
 
     return TM
 
+
 # rotational matrix transformations around the main axes
+
 
 def rot_x(angle: float) -> np.ndarray:
     Rx = np.identity(4)
@@ -22,6 +25,7 @@ def rot_x(angle: float) -> np.ndarray:
 
     return Rx
 
+
 def rot_y(angle: float) -> np.ndarray:
     Ry = np.identity(4)
     Ry[0, 0] = math.cos(angle)
@@ -30,6 +34,7 @@ def rot_y(angle: float) -> np.ndarray:
     Ry[2, 2] = math.cos(angle)
 
     return Ry
+
 
 def rot_z(angle: float) -> np.ndarray:
     Rz = np.identity(4)
@@ -40,16 +45,18 @@ def rot_z(angle: float) -> np.ndarray:
 
     return Rz
 
+
 def rpy_to_matrix(roll: float, pitch: float, yaw: float) -> np.ndarray:
     # URDF standard: Z, Y, X
     return rot_z(yaw) @ rot_y(pitch) @ rot_x(roll)
 
+
 def joint_rotation_matrix(axis: list, theta: float) -> np.ndarray:
     """Axes:\n
-        x: [1, 0, 0]\n
-        y: [0, 1, 0]\n
-        z: [0, 0, 1]"""
-    
+    x: [1, 0, 0]\n
+    y: [0, 1, 0]\n
+    z: [0, 0, 1]"""
+
     if axis == [1, 0, 0]:
         return rot_x(theta)
     elif axis == [0, 1, 0]:
@@ -58,7 +65,6 @@ def joint_rotation_matrix(axis: list, theta: float) -> np.ndarray:
         return rot_z(theta)
     else:
         raise ValueError("Use only '0' or '1' to define an axis in the list")
-    
 
 
 def rot_matrix_to_euler(R: np.ndarray) -> np.ndarray:
@@ -70,6 +76,6 @@ def rot_matrix_to_euler(R: np.ndarray) -> np.ndarray:
 
     return np.array([roll, pitch, yaw])
 
+
 def normalize_angle(angle: float) -> float:
     return (angle + np.pi) % (2 * np.pi) - np.pi
- 

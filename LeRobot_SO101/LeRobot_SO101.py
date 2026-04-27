@@ -1,11 +1,11 @@
 import sys
 import numpy as np
 
-sys.path.append('../kinematics_project')
+sys.path.append("../kinematics_project")
 
 from kinematics.robot_nDoF import Robot
 
-SO101 = Robot.from_urdf('LeRobot_SO101/LeRobot_SO101.urdf')
+SO101 = Robot.from_urdf("LeRobot_SO101/LeRobot_SO101.urdf")
 
 """
 for i in SO101.kinematic_chain:
@@ -32,8 +32,8 @@ verificated_T = SO101.FK(angles_IK)
 verificated_position = verificated_T[:3, 3]
 
 
-print(f'Test angles: {test_angles}')
-print(f'Angles calculated with IK: {angles_IK}')
+print(f"Test angles: {test_angles}")
+print(f"Angles calculated with IK: {angles_IK}")
 
-print(f'Test position: {position}')
-print(f'Verificated position with FK: {verificated_position}')
+print(f"Test position: {position}")
+print(f"Verificated position with FK: {verificated_position}")
