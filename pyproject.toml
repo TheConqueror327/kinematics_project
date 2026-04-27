@@ -16,11 +16,8 @@ dev = [
 
 [tool.ruff]
 
-line-length = 88
+[tool.ruff.lint]
 
-
-[tool.ruff.init]
-
-select=["ALL"]
+select = ["ALL"]
 
 ignore = ["ISC001", "COM812"]
