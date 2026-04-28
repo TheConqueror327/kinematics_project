@@ -1,4 +1,7 @@
-kinematics/__pycache__/
+so101_kinematics/__pycache__/
 test/__pycache__/
 .vscode/
 .venv/
+.ruff_cache/
+__pycache__/
+*.pyc
